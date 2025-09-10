@@ -5,100 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>xtutor</title>
 
-  <!-- Lora font (regular + italic) -->
+  <!-- Lora font -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
 
   <style>
-    :root{
-      /* Color + scale tuned to the reference */
+    :root {
       --blue: #1673e6;
       --text: #ffffff;
-      --grid: rgba(255,255,255,0.06);
-      --grid-strong: rgba(255,255,255,0.08);
+      --grid-light: rgba(255, 255, 255, 0.04);   /* faint small grid */
+      --grid-dark: rgba(255, 255, 255, 0.06);    /* faint larger grid */
 
-      /* Typography scales (responsive but locks near the reference on desktop) */
-      --logo-size: clamp(64px, 9.5vw, 180px);
-      --tagline-size: clamp(18px, 2.1vw, 36px);
-      --footer-size: clamp(12px, 1vw, 18px);
-      --tight: 0.01em;
+      --logo-size: clamp(64px, 9vw, 160px);
+      --tagline-size: clamp(18px, 2vw, 32px);
+      --footer-size: clamp(20px, 2vw, 28px);
     }
 
-    /* Page */
-    html, body {
-      height: 100%;
-    }
     body {
       margin: 0;
-      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       background: var(--blue);
-      font-family: "Lora", serif;
 
-      /* Subtle grid (small cells + stronger major lines) */
+      /* subtle grid with small + large squares, aligned to edges */
       background-image:
-        linear-gradient(to right, var(--grid) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
-        linear-gradient(to right, var(--grid-strong) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-strong) 1px, transparent 1px);
-      background-size: 80px 80px, 80px 80px, 400px 400px, 400px 400px;
+        linear-gradient(to right, var(--grid-light) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-light) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-dark) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-dark) 1px, transparent 1px);
+      background-size: 60px 60px, 60px 60px, 300px 300px, 300px 300px;
       background-position: 0 0, 0 0, 0 0, 0 0;
 
-      display: grid;
-      grid-template-rows: 1fr auto;
-      place-items: center;
-    }
-
-    .center {
+      font-family: "Lora", serif;
+      color: var(--text);
       text-align: center;
-      transform: translateY(-4vh); /* nudges up to match reference composition */
     }
 
     .logo {
       font-size: var(--logo-size);
       font-weight: 400;
-      letter-spacing: var(--tight);
-      line-height: 1.05;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
       margin: 0;
     }
-    /* Make only the initial x italic, everywhere we mark it up */
+
     .x-italic {
       font-style: italic;
     }
 
     .tagline {
       font-size: var(--tagline-size);
-      margin-top: clamp(8px, 1.2vw, 16px);
+      margin-top: 12px;
       font-weight: 400;
-      letter-spacing: var(--tight);
-      opacity: 0.95;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     .footer {
-      width: 100%;
-      text-align: center;
-      padding: clamp(14px, 2vh, 24px) 0;
+      position: absolute;
+      bottom: 50px; /* raised */
       font-size: var(--footer-size);
       font-weight: 700;
-      opacity: 0.95;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
-
-    /* Crisp rendering on Windows too */
-    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   </style>
 </head>
 <body>
-  <main class="center" aria-label="Landing content">
-    <h1 class="logo">
-      <span class="x-italic">x</span>tutor
-    </h1>
-
-    <p class="tagline">
-      Still looking for <span class="x-italic">x</span>?
-    </p>
+  <main>
+    <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
+    <p class="tagline">Still looking for <span class="x-italic">x</span>?</p>
   </main>
 
-  <footer class="footer">
-    © xtutor.ai , 2025
-  </footer>
+  <div class="footer">©</div>
 </body>
 </html>
 
