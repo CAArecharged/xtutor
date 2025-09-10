@@ -12,7 +12,7 @@
 
   <style>
     :root{
-      --blue: #1673e6;
+      --blue: #0868d3; /* updated blue */
 
       /* Uniform, subtle grid */
       --grid: rgba(255,255,255,0.045);
@@ -55,7 +55,7 @@
       font-weight: 400;
       opacity: 0.4; /* less visible */
       color: #ffffff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.35);
       font-family: "Montserrat", sans-serif;
     }
 
@@ -66,7 +66,8 @@
       font-weight: 400;
       font-size: var(--logo-size);
       line-height: 1.05;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      /* stronger, more visible shadow */
+      text-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
     }
     .x-italic{ font-style: italic; }
 
@@ -74,7 +75,8 @@
       margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer */
       font-size: var(--tagline-size);
       font-weight: 400;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      /* slightly stronger shadow */
+      text-shadow: 0 3px 6px rgba(0,0,0,0.45);
     }
 
     .copyright{
@@ -86,7 +88,7 @@
       font-weight: 400;
       opacity: 0.55;
       font-size: clamp(18px, 1.6vw, 24px);
-      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
       user-select: none;
     }
   </style>
