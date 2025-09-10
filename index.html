@@ -7,6 +7,8 @@
 
   <!-- Lora font (regular + italic) -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+  <!-- Montserrat (used as Canva Sans replacement) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet" />
 
   <style>
     :root{
@@ -55,9 +57,11 @@
       opacity: 0.6;
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+
+      font-family: "Montserrat", sans-serif; /* Canva Sans replacement */
     }
 
-    main { transform: translateY(-2vh); } /* small visual nudge like the ref */
+    main { transform: translateY(-2vh); } /* small visual nudge */
 
     .logo{
       margin: 0;
@@ -78,7 +82,7 @@
     /* Refined copyright symbol */
     .copyright{
       position: absolute;
-      bottom: 50px;             /* raised from the very bottom */
+      bottom: 50px;             /* raised */
       left: 50%;
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
@@ -91,7 +95,7 @@
   </style>
 </head>
 <body>
-  <!-- New faint topline -->
+  <!-- Faint topline -->
   <div class="topline">
     The UK Maths Tutor, Supporting learners from KS1 to KS3.
   </div>
