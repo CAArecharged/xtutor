@@ -20,8 +20,10 @@
       --logo-size: clamp(58px, 8.1vw, 144px);
       --tagline-size: clamp(12px, 1.4vw, 22px);
 
-      /* Animation duration (JS updates this live) */
-      --floater-dur: 8000ms;
+      /* Orbit settings */
+      --orbit-dur: 12s;                 /* speed of the circle path */
+      --orbit-radius: 1.8em;            /* distance from logo center */
+      --orb-size: clamp(16px, 2.1vw, 30px); /* big, bright orb */
     }
 
     html, body { height: 100%; }
@@ -45,43 +47,18 @@
 
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-
-      animation: gridDrift 40s linear infinite;
     }
 
-    /* Subtle stylish effects: animated sheen + gentle vignette */
-    body::before,
-    body::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    /* Diagonal moving sheen (very faint) */
-    body::before{
-      background: linear-gradient(
-        120deg,
-        rgba(255,255,255,0.06) 0%,
-        rgba(255,255,255,0.00) 28%,
-        rgba(255,255,255,0.06) 55%,
-        rgba(255,255,255,0.00) 100%
-      );
-      background-size: 200% 200%;
-      mix-blend-mode: soft-light;
-      animation: sheenSlide 24s linear infinite;
-    }
-
-    /* Soft vignette to center focus */
+    /* Gentle vignette for focus */
     body::after{
-      background: radial-gradient(
-        120% 120% at 50% 45%,
-        rgba(0,0,0,0.00) 55%,
-        rgba(0,0,0,0.10) 100%
-      );
+      content:"";
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(120% 120% at 50% 45%,
+        rgba(0,0,0,0) 55%,
+        rgba(0,0,0,0.10) 100%);
     }
 
-    /* Topline (faint, 0.7 as requested) */
+    /* Topline (0.7 opacity) */
     .topline {
       position: absolute;
       top: 50px;
@@ -98,20 +75,49 @@
 
     main { transform: translateY(-2vh); z-index: 2; }
 
+    /* Wrapper so the orb can orbit the logo’s center */
+    .logo-wrap{
+      position: relative;
+      display: inline-block;
+      line-height: 1;
+    }
+
     .logo{
       margin: 0;
       font-weight: 400;
       font-size: var(--logo-size);
       line-height: 1.05;
       text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      position: relative;
+      z-index: 2; /* above the orb */
     }
 
-    /* The big “x”: synced pulse with the floater */
+    /* Big “x” – pulse synced with orbit duration */
     .x-italic{
       font-style: italic;
       display: inline-block;
       will-change: transform, text-shadow, filter;
-      animation: xSyncPulse var(--floater-dur) ease-in-out infinite;
+      animation: xPulse var(--orbit-dur) ease-in-out infinite;
+    }
+
+    /* Bright orbiting dot */
+    .orb{
+      position: absolute;
+      top: 50%; left: 50%;
+      width: var(--orb-size); height: var(--orb-size);
+      margin: calc(var(--orb-size)/-2) 0 0 calc(var(--orb-size)/-2);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      box-shadow:
+        0 0 18px rgba(255,255,255,0.75),
+        0 0 42px rgba(255,255,255,0.45);
+      pointer-events: none;
+      z-index: 1; /* behind text */
+      mix-blend-mode: screen;
+
+      /* Orbit: rotate around center then translate out by radius */
+      transform-origin: center;
+      animation: orbit var(--orbit-dur) linear infinite, orbPulse var(--orbit-dur) ease-in-out infinite;
     }
 
     .tagline{
@@ -121,7 +127,7 @@
       text-shadow: 0 2px 5px rgba(0,0,0,0.20);
     }
 
-    /* Bottom text (0.7 opacity as requested) */
+    /* Bottom text (0.7 opacity) */
     .copyright{
       position: absolute;
       bottom: 50px;
@@ -136,46 +142,15 @@
       z-index: 2;
     }
 
-    /* Floating glowing circle (moves via JS, pulses via CSS in sync) */
-    .floater{
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: clamp(10px, 1.2vw, 16px);
-      height: clamp(10px, 1.2vw, 16px);
-      border-radius: 50%;
-      background: rgba(255,255,255,0.85);
-      box-shadow:
-        0 0 12px rgba(255,255,255,0.6),
-        0 0 24px rgba(255,255,255,0.35);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition:
-        top var(--floater-dur) ease-in-out,
-        left var(--floater-dur) ease-in-out,
-        transform 600ms ease-in-out;
-      z-index: 1;
-      mix-blend-mode: screen;
-      opacity: 0.85;
-
-      /* brightness pulse synced with the x */
-      animation: floaterPulse var(--floater-dur) ease-in-out infinite;
-    }
-
     /* Animations */
-    @keyframes sheenSlide{
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 200%; }
-    }
-    @keyframes gridDrift{
-      0%   { background-position: 0px 0px, 0px 0px; }
-      50%  { background-position: 12px 10px, 12px 10px; }
-      100% { background-position: 0px 0px, 0px 0px; }
+    @keyframes orbit{
+      0%   { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+      100% { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
     }
 
-    /* Synced pulse for the big “x” */
-    @keyframes xSyncPulse{
-      0% {
+    /* Synchronized pulse for the big “x” */
+    @keyframes xPulse{
+      0%, 100% {
         transform: translateY(0) scale(1);
         text-shadow: 0 2px 6px rgba(0,0,0,0.22);
         filter: drop-shadow(0 0 0 rgba(255,255,255,0));
@@ -183,117 +158,52 @@
       50% {
         transform: translateY(-0.6%) scale(1.03);
         text-shadow: 0 3px 10px rgba(0,0,0,0.28);
-        /* subtle white aura for soft contrast */
         filter: drop-shadow(0 0 8px rgba(255,255,255,0.16));
-      }
-      100% {
-        transform: translateY(0) scale(1);
-        text-shadow: 0 2px 6px rgba(0,0,0,0.22);
-        filter: drop-shadow(0 0 0 rgba(255,255,255,0));
       }
     }
 
-    /* Synced brightness pulse for the floating circle */
-    @keyframes floaterPulse{
+    /* Pulse brightness of the orb (in sync with xPulse) */
+    @keyframes orbPulse{
       0%, 100% {
         box-shadow:
-          0 0 10px rgba(255,255,255,0.55),
-          0 0 22px rgba(255,255,255,0.28);
-        opacity: 0.78;
+          0 0 16px rgba(255,255,255,0.70),
+          0 0 36px rgba(255,255,255,0.40);
+        opacity: 0.88;
       }
       50% {
         box-shadow:
-          0 0 16px rgba(255,255,255,0.75),
-          0 0 32px rgba(255,255,255,0.42);
-        opacity: 0.92;
+          0 0 26px rgba(255,255,255,0.95),
+          0 0 56px rgba(255,255,255,0.55);
+        opacity: 1;
       }
     }
 
-    /* Accessibility: reduce motion if user prefers */
+    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
-      body { animation: none; }
-      body::before { animation: none; }
       .x-italic { animation: none; }
-      .floater { transition: none; animation: none; display: none; }
+      .orb { animation: none; display: none; }
     }
   </style>
 </head>
 <body>
   <!-- Topline -->
   <div class="topline">
-    The UK Maths Tutor, Nurturing Mathematical Wizardry.
+    The UK Maths Tutor, Supporting learners from KS1 to KS3.
   </div>
 
   <main>
-    <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
-    <p class="tagline">Find your <span class="x-italic">x</span></p>
-  </main>
+    <div class="logo-wrap">
+      <!-- Bright orbiting dot -->
+      <div class="orb" aria-hidden="true"></div>
 
-  <!-- Floating glowing circle -->
-  <div class="floater" aria-hidden="true"></div>
+      <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
+    </div>
+
+    <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
+  </main>
 
   <!-- Bottom text -->
   <div class="copyright">© xtutor.ai , 2025</div>
-
-  <script>
-    (function(){
-      const floater = document.querySelector('.floater');
-      const x = document.querySelector('.x-italic');
-      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!floater || !x || reduceMotion) return;
-
-      function rand(min, max){ return Math.random() * (max - min) + min; }
-
-      // Restart CSS animations so the x pulse + floater pulse stay perfectly in sync
-      function restartSyncAnimations(){
-        [x, floater].forEach(el => {
-          el.style.animation = 'none';
-        });
-        // Force reflow
-        void x.offsetHeight;
-        // Restore animations (CSS rules reapply, using --floater-dur)
-        [x, floater].forEach(el => {
-          el.style.animation = '';
-        });
-      }
-
-      function moveFloater(){
-        const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-        // Keep within comfortable margins so it doesn't collide with edges/overlays
-        const marginX = vw * 0.06;  // 6% side margin
-        const marginY = vh * 0.10;  // 10% top/bottom margin (avoid topline/copyright zones)
-
-        const left = rand(marginX, vw - marginX);
-        const top  = rand(marginY, vh - marginY);
-
-        // Randomize duration between 6s and 12s for natural variation
-        const dur = Math.round(rand(6000, 12000));
-        document.documentElement.style.setProperty('--floater-dur', dur + 'ms');
-
-        // Apply new position
-        floater.style.left = left + 'px';
-        floater.style.top  = top  + 'px';
-
-        // Restart animations so the x pulse and floater brightness line up with each new move
-        restartSyncAnimations();
-
-        // Schedule next move once the current transition roughly finishes
-        clearTimeout(moveFloater._t);
-        moveFloater._t = setTimeout(moveFloater, dur + 200);
-      }
-
-      // Kick off
-      moveFloater();
-
-      // Reposition on resize to keep within bounds + resync
-      window.addEventListener('resize', function(){
-        clearTimeout(moveFloater._t);
-        moveFloater();
-      }, { passive: true });
-    })();
-  </script>
 </body>
 </html>
 
