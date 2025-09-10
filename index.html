@@ -5,68 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>xtutor</title>
 
-  <!-- Lora font -->
+  <!-- Lora font (regular + italic) -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
 
   <style>
-    :root {
+    :root{
       --blue: #1673e6;
-      --text: #ffffff;
-      --grid-light: rgba(255, 255, 255, 0.04);   /* faint small grid */
-      --grid-dark: rgba(255, 255, 255, 0.06);    /* faint larger grid */
 
-      --logo-size: clamp(64px, 9vw, 160px);
+      /* Uniform, subtle grid */
+      --grid: rgba(255,255,255,0.045);
+      --cell: 60px; /* matches your reference scale */
+
+      /* Type scale */
+      --logo-size: clamp(58px, 8.1vw, 144px);   /* 10% smaller than before */
       --tagline-size: clamp(18px, 2vw, 32px);
-      --footer-size: clamp(20px, 2vw, 28px);
     }
 
-    body {
+    html, body { height: 100%; }
+    body{
       margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       background: var(--blue);
-
-      /* subtle grid with small + large squares, aligned to edges */
-      background-image:
-        linear-gradient(to right, var(--grid-light) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-light) 1px, transparent 1px),
-        linear-gradient(to right, var(--grid-dark) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid-dark) 1px, transparent 1px);
-      background-size: 60px 60px, 60px 60px, 300px 300px, 300px 300px;
-      background-position: 0 0, 0 0, 0 0, 0 0;
-
+      color: #fff;
       font-family: "Lora", serif;
-      color: var(--text);
+      display: grid;
+      place-items: center;
       text-align: center;
+
+      /* Uniform faint grid (no bold major lines) */
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: var(--cell) var(--cell), var(--cell) var(--cell);
+      background-position: 0 0, 0 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
+      overflow: hidden;
     }
 
-    .logo {
-      font-size: var(--logo-size);
-      font-weight: 400;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    main { transform: translateY(-2vh); } /* small visual nudge like the ref */
+
+    .logo{
       margin: 0;
+      font-weight: 400;
+      font-size: --logo-size; /* fallback if var() not supported */
+      font-size: var(--logo-size);
+      line-height: 1.05;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
+    .x-italic{ font-style: italic; }
 
-    .x-italic {
-      font-style: italic;
-    }
-
-    .tagline {
+    .tagline{
+      margin: clamp(6px, 0.8vw, 10px) 0 0; /* ~50% closer than before */
       font-size: var(--tagline-size);
-      margin-top: 12px;
       font-weight: 400;
       text-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    .footer {
+    /* Refined copyright symbol */
+    .copyright{
       position: absolute;
-      bottom: 50px; /* raised */
-      font-size: var(--footer-size);
-      font-weight: 700;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      bottom: 50px;             /* raised from the very bottom */
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
+      font-weight: 400;         /* not bold */
+      opacity: 0.55;            /* faint */
+      font-size: clamp(18px, 1.6vw, 24px);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      user-select: none;
     }
   </style>
 </head>
@@ -76,8 +83,6 @@
     <p class="tagline">Still looking for <span class="x-italic">x</span>?</p>
   </main>
 
-  <div class="footer">©</div>
+  <div class="copyright">©</div>
 </body>
 </html>
-
-
