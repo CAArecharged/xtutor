@@ -7,7 +7,7 @@
 
   <!-- Lora font (regular + italic) -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
-  <!-- Montserrat (used as Canva Sans replacement) -->
+  <!-- Montserrat (used as Canva Sans replacement for topline) -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet" />
 
   <style>
@@ -19,8 +19,8 @@
       --cell: 60px;
 
       /* Type scale */
-      --logo-size: clamp(58px, 8.1vw, 144px);   /* 10% smaller */
-      --tagline-size: clamp(18px, 2vw, 32px);
+      --logo-size: clamp(58px, 8.1vw, 144px);
+      --tagline-size: clamp(12px, 1.4vw, 22px);  /* 30% smaller */
     }
 
     html, body { height: 100%; }
@@ -33,7 +33,6 @@
       place-items: center;
       text-align: center;
 
-      /* Uniform faint grid */
       background-image:
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
@@ -49,19 +48,18 @@
     /* faint header tagline */
     .topline {
       position: absolute;
-      top: 20px;
+      top: 50px; /* moved further down */
       left: 50%;
       transform: translateX(-50%);
-      font-size: clamp(14px, 1.2vw, 18px);
+      font-size: clamp(12px, 1vw, 16px);
       font-weight: 400;
-      opacity: 0.6;
+      opacity: 0.4; /* less visible */
       color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-
-      font-family: "Montserrat", sans-serif; /* Canva Sans replacement */
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      font-family: "Montserrat", sans-serif;
     }
 
-    main { transform: translateY(-2vh); } /* small visual nudge */
+    main { transform: translateY(-2vh); }
 
     .logo{
       margin: 0;
@@ -73,16 +71,15 @@
     .x-italic{ font-style: italic; }
 
     .tagline{
-      margin: clamp(6px, 0.8vw, 10px) 0 0; /* 50% closer */
+      margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer */
       font-size: var(--tagline-size);
       font-weight: 400;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
-    /* Refined copyright symbol */
     .copyright{
       position: absolute;
-      bottom: 50px;             /* raised */
+      bottom: 50px;
       left: 50%;
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
