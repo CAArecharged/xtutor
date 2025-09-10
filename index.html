@@ -13,14 +13,15 @@
   <style>
     :root{
       --blue: #0868d3;
-
-      /* Uniform, subtle grid */
       --grid: rgba(255,255,255,0.045);
       --cell: 60px;
 
       /* Type scale */
       --logo-size: clamp(58px, 8.1vw, 144px);
-      --tagline-size: clamp(12px, 1.4vw, 22px);  /* already 30% smaller */
+      --tagline-size: clamp(12px, 1.4vw, 22px);
+
+      /* Animation duration (JS updates this live) */
+      --floater-dur: 8000ms;
     }
 
     html, body { height: 100%; }
@@ -80,63 +81,47 @@
       );
     }
 
-    /* Faint header tagline (topline) */
+    /* Topline (faint, 0.7 as requested) */
     .topline {
       position: absolute;
-      top: 50px; /* placed a bit lower as requested */
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
       font-size: clamp(12px, 1vw, 16px);
       font-weight: 400;
-      opacity: 0.7; /* updated to 0.7 */
+      opacity: 0.7;
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       font-family: "Montserrat", sans-serif;
+      z-index: 2;
     }
 
-    main { transform: translateY(-2vh); }
+    main { transform: translateY(-2vh); z-index: 2; }
 
     .logo{
       margin: 0;
       font-weight: 400;
       font-size: var(--logo-size);
       line-height: 1.05;
-      /* Subtle, parent-friendly shadow for readability */
       text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
-    /* Dynamic “x” */
+    /* The big “x”: synced pulse with the floater */
     .x-italic{
       font-style: italic;
       display: inline-block;
-      position: relative;
-      animation: xPulse 4.5s ease-in-out infinite;
-      will-change: transform, text-shadow;
-    }
-    /* Tiny orbiting dot around the x */
-    .x-italic::after{
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0.22em;
-      height: 0.22em;
-      margin: -0.11em 0 0 -0.11em;
-      background: rgba(255,255,255,0.9);
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(255,255,255,0.55);
-      transform-origin: 0.6em -0.1em; /* radius of the orbit relative to the x */
-      animation: xOrbit 7s linear infinite;
+      will-change: transform, text-shadow, filter;
+      animation: xSyncPulse var(--floater-dur) ease-in-out infinite;
     }
 
     .tagline{
-      margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer to logo */
+      margin: clamp(4px, 0.6vw, 7px) 0 0;
       font-size: var(--tagline-size);
       font-weight: 400;
       text-shadow: 0 2px 5px rgba(0,0,0,0.20);
     }
 
-    /* Bottom text */
+    /* Bottom text (0.7 opacity as requested) */
     .copyright{
       position: absolute;
       bottom: 50px;
@@ -144,10 +129,37 @@
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
       font-weight: 400;
-      opacity: 0.7; /* updated to 0.7 */
+      opacity: 0.7;
       font-size: clamp(18px, 1.6vw, 24px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       user-select: none;
+      z-index: 2;
+    }
+
+    /* Floating glowing circle (moves via JS, pulses via CSS in sync) */
+    .floater{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: clamp(10px, 1.2vw, 16px);
+      height: clamp(10px, 1.2vw, 16px);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      box-shadow:
+        0 0 12px rgba(255,255,255,0.6),
+        0 0 24px rgba(255,255,255,0.35);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition:
+        top var(--floater-dur) ease-in-out,
+        left var(--floater-dur) ease-in-out,
+        transform 600ms ease-in-out;
+      z-index: 1;
+      mix-blend-mode: screen;
+      opacity: 0.85;
+
+      /* brightness pulse synced with the x */
+      animation: floaterPulse var(--floater-dur) ease-in-out infinite;
     }
 
     /* Animations */
@@ -160,26 +172,54 @@
       50%  { background-position: 12px 10px, 12px 10px; }
       100% { background-position: 0px 0px, 0px 0px; }
     }
-    @keyframes xPulse{
-      0%   { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
-      50%  { transform: translateY(-0.8%) scale(1.035); text-shadow: 0 0 10px rgba(255,255,255,0.18); }
-      100% { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
+
+    /* Synced pulse for the big “x” */
+    @keyframes xSyncPulse{
+      0% {
+        transform: translateY(0) scale(1);
+        text-shadow: 0 2px 6px rgba(0,0,0,0.22);
+        filter: drop-shadow(0 0 0 rgba(255,255,255,0));
+      }
+      50% {
+        transform: translateY(-0.6%) scale(1.03);
+        text-shadow: 0 3px 10px rgba(0,0,0,0.28);
+        /* subtle white aura for soft contrast */
+        filter: drop-shadow(0 0 8px rgba(255,255,255,0.16));
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        text-shadow: 0 2px 6px rgba(0,0,0,0.22);
+        filter: drop-shadow(0 0 0 rgba(255,255,255,0));
+      }
     }
-    @keyframes xOrbit{
-      0%   { transform: rotate(0deg) translateX(0); }
-      100% { transform: rotate(360deg) translateX(0); }
+
+    /* Synced brightness pulse for the floating circle */
+    @keyframes floaterPulse{
+      0%, 100% {
+        box-shadow:
+          0 0 10px rgba(255,255,255,0.55),
+          0 0 22px rgba(255,255,255,0.28);
+        opacity: 0.78;
+      }
+      50% {
+        box-shadow:
+          0 0 16px rgba(255,255,255,0.75),
+          0 0 32px rgba(255,255,255,0.42);
+        opacity: 0.92;
+      }
     }
 
     /* Accessibility: reduce motion if user prefers */
     @media (prefers-reduced-motion: reduce){
       body { animation: none; }
       body::before { animation: none; }
-      .x-italic, .x-italic::after { animation: none; }
+      .x-italic { animation: none; }
+      .floater { transition: none; animation: none; display: none; }
     }
   </style>
 </head>
 <body>
-  <!-- Topline (Canva Sans-style via Montserrat), now at 0.7 opacity -->
+  <!-- Topline -->
   <div class="topline">
     The UK Maths Tutor, Supporting learners from KS1 to KS3.
   </div>
@@ -189,8 +229,72 @@
     <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
   </main>
 
-  <!-- Bottom text now at 0.7 opacity -->
+  <!-- Floating glowing circle -->
+  <div class="floater" aria-hidden="true"></div>
+
+  <!-- Bottom text -->
   <div class="copyright">© xtutor.ai , 2025</div>
+
+  <script>
+    (function(){
+      const floater = document.querySelector('.floater');
+      const x = document.querySelector('.x-italic');
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!floater || !x || reduceMotion) return;
+
+      function rand(min, max){ return Math.random() * (max - min) + min; }
+
+      // Restart CSS animations so the x pulse + floater pulse stay perfectly in sync
+      function restartSyncAnimations(){
+        [x, floater].forEach(el => {
+          el.style.animation = 'none';
+        });
+        // Force reflow
+        void x.offsetHeight;
+        // Restore animations (CSS rules reapply, using --floater-dur)
+        [x, floater].forEach(el => {
+          el.style.animation = '';
+        });
+      }
+
+      function moveFloater(){
+        const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+        // Keep within comfortable margins so it doesn't collide with edges/overlays
+        const marginX = vw * 0.06;  // 6% side margin
+        const marginY = vh * 0.10;  // 10% top/bottom margin (avoid topline/copyright zones)
+
+        const left = rand(marginX, vw - marginX);
+        const top  = rand(marginY, vh - marginY);
+
+        // Randomize duration between 6s and 12s for natural variation
+        const dur = Math.round(rand(6000, 12000));
+        document.documentElement.style.setProperty('--floater-dur', dur + 'ms');
+
+        // Apply new position
+        floater.style.left = left + 'px';
+        floater.style.top  = top  + 'px';
+
+        // Restart animations so the x pulse and floater brightness line up with each new move
+        restartSyncAnimations();
+
+        // Schedule next move once the current transition roughly finishes
+        clearTimeout(moveFloater._t);
+        moveFloater._t = setTimeout(moveFloater, dur + 200);
+      }
+
+      // Kick off
+      moveFloater();
+
+      // Reposition on resize to keep within bounds + resync
+      window.addEventListener('resize', function(){
+        clearTimeout(moveFloater._t);
+        moveFloater();
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
+
 
