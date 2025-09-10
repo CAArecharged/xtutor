@@ -1,72 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>XT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital@1&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>xtutor</title>
   <style>
     body {
       margin: 0;
-      background-color: white;
-      overflow: hidden;
+      padding: 0;
+      background: #0d6efd; /* Bright blue background */
+      font-family: 'Georgia', serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-      width: 100vw;
+      flex-direction: column;
       position: relative;
-      font-family: 'Lora', serif;
+      background-image: linear-gradient(
+        to right, rgba(255,255,255,0.05) 1px, transparent 1px
+      ), linear-gradient(
+        to bottom, rgba(255,255,255,0.05) 1px, transparent 1px
+      );
+      background-size: 50px 50px; /* Creates the grid effect */
     }
 
-    .crazy-x {
-      font-size: 70px;
+    .logo {
+      font-size: 80px;
+      font-weight: normal;
+    }
+
+    .tagline {
+      font-size: 20px;
+      margin-top: 10px;
       font-style: italic;
+    }
+
+    .footer {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease;
-      user-select: none;
-    }
-
-    .crazy-x.animate {
-      animation: wiggle 0.3s ease-in-out;
-    }
-
-    @keyframes wiggle {
-      0%   { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-      25%  { transform: translate(-50%, -50%) rotate(20deg) scale(1.3); }
-      50%  { transform: translate(-50%, -50%) rotate(-20deg) scale(0.8); }
-      75%  { transform: translate(-50%, -50%) rotate(15deg) scale(1.2); }
-      100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+      bottom: 30px;
+      font-size: 16px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="crazy-x" id="crazyX">x</div>
-
-  <script>
-    const crazyX = document.getElementById('crazyX');
-
-    crazyX.addEventListener('mouseenter', () => {
-      // Add wiggle animation class
-      crazyX.classList.add('animate');
-
-      // Move to random position after short delay (for wiggle effect)
-      setTimeout(() => {
-        const padding = 100; // keep some padding so x doesn't get cut off
-        const maxX = window.innerWidth - padding;
-        const maxY = window.innerHeight - padding;
-        const newX = Math.random() * maxX;
-        const newY = Math.random() * maxY;
-
-        crazyX.style.left = `${newX}px`;
-        crazyX.style.top = `${newY}px`;
-
-        // Remove animation class to allow re-triggering
-        crazyX.classList.remove('animate');
-      }, 300); // match wiggle duration
-    });
-  </script>
+  <div class="logo">xtutor</div>
+  <div class="tagline">Still looking for x?</div>
+  <div class="footer">© xtutor.ai , 2025</div>
 </body>
 </html>
 
