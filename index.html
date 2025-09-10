@@ -14,24 +14,20 @@
     :root{
       --blue: #0868d3;
       --grid: rgba(255,255,255,0.045);
-      --cell: 60px;
+      --cell: 60px;                        /* base grid cell size */
 
-      --logo-size: clamp(58px, 8.1vw, 144px);
+      --logo-size: clamp(48px, 8.1vw, 144px);
       --tagline-size: clamp(12px, 1.4vw, 22px);
 
-      /* Orbit visuals */
-      --orb-size: clamp(18px, 2.4vw, 34px);      /* bright, big */
-      --orbit-dur: 14s;                           /* slow, calm rotation */
-      --safe-gap: clamp(14px, 1.2vw, 24px);       /* space between text and orb */
-
-      /* These are set by JS based on the logo size */
-      --orbit-w: 0px;
-      --orbit-h: 0px;
+      --pulse-dur: 12s;                    /* slow pulse */
+      --topline-y: 50px;                   /* base topline offset */
+      --bottom-gap: 50px;                  /* base copyright offset */
     }
 
     html, body { height: 100%; }
     body{
       margin: 0;
+      min-height: 100svh;                  /* fill mobile viewport reliably */
       background: var(--blue);
       color: #fff;
       font-family: "Lora", serif;
@@ -47,9 +43,11 @@
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
       background-size: var(--cell) var(--cell), var(--cell) var(--cell);
       background-position: 0 0, 0 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Gentle vignette (keeps base blue constant) */
+    /* Gentle vignette */
     body::after{
       content:"";
       position: absolute; inset: 0; pointer-events: none;
@@ -59,42 +57,40 @@
       z-index: 0;
     }
 
-    /* Background breathing (slow darkening/brightening overlay) */
+    /* Background breathing (dark/light cycle) */
     body::before{
       content:"";
       position: absolute; inset: 0; pointer-events: none;
       background: rgba(0,0,0,0.10);
-      opacity: 0;                  /* starts clear */
+      opacity: 0;
       animation: bgPulse 16s ease-in-out infinite;
       z-index: 0;
     }
     @keyframes bgPulse{
       0%,100% { opacity: 0; }
-      50%     { opacity: 0.08; }  /* very gentle fade darker */
+      50%     { opacity: 0.08; }
     }
 
     .topline {
       position: absolute;
-      top: 50px;
+      top: calc(var(--topline-y) + env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%);
-      font-size: clamp(12px, 1vw, 16px);
+      font-size: clamp(12px, 1.2vw, 16px);
       font-weight: 400;
       opacity: 0.7;
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       font-family: "Montserrat", sans-serif;
       z-index: 3;
+      padding: 0 12px;                     /* avoid edge clipping on tiny screens */
+      max-width: 95vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     main { transform: translateY(-2vh); z-index: 3; }
-
-    /* Wrap so we can size the orbit around the whole word */
-    .logo-wrap{
-      position: relative;
-      display: inline-block;
-      line-height: 1;
-    }
 
     .logo{
       margin: 0;
@@ -103,94 +99,78 @@
       line-height: 1.05;
       text-shadow: 0 2px 6px rgba(0,0,0,0.25);
       position: relative;
-      z-index: 4; /* text above background overlays */
+      z-index: 4;
     }
 
     .x-italic{
       font-style: italic;
       display: inline-block;
-      animation: xPulse var(--orbit-dur) ease-in-out infinite;
-      will-change: transform, text-shadow;
-    }
-
-    /* The orbit ring sized by JS so the orb never overlaps the text */
-    .orbit{
-      position: absolute;
-      top: 50%; left: 50%;
-      width: var(--orbit-w);
-      height: var(--orbit-h);
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 5;                         /* above the text */
-      animation: orbitSpin var(--orbit-dur) linear infinite;
-    }
-
-    /* The bright orb that rides the ring’s perimeter */
-    .orb{
-      position: absolute;
-      top: 50%; left: 100%;
-      width: var(--orb-size); height: var(--orb-size);
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: rgba(255,255,255,0.94);
-      box-shadow:
-        0 0 28px rgba(255,255,255,0.9),
-        0 0 72px rgba(255,255,255,0.55);
-      mix-blend-mode: screen;
-      animation: orbPulse var(--orbit-dur) ease-in-out infinite;
+      animation: xPulse var(--pulse-dur) ease-in-out infinite;
     }
 
     .tagline{
-      margin: clamp(4px, 0.6vw, 7px) 0 0;
+      margin: clamp(4px, 2.2vw, 10px) 0 0; /* slightly larger vertical rhythm on phones */
       font-size: var(--tagline-size);
       font-weight: 400;
       text-shadow: 0 2px 5px rgba(0,0,0,0.20);
+      padding: 0 12px;
     }
 
     .copyright{
       position: absolute;
-      bottom: 50px;
+      bottom: calc(var(--bottom-gap) + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
       font-weight: 400;
       opacity: 0.7;
-      font-size: clamp(18px, 1.6vw, 24px);
+      font-size: clamp(16px, 1.6vw, 24px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       user-select: none;
       z-index: 3;
+      padding: 0 12px;
+      max-width: 95vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Animations */
-    @keyframes orbitSpin{
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to   { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
     @keyframes xPulse{
       0%, 100% { transform: scale(1);   text-shadow: 0 2px 6px rgba(0,0,0,0.22); }
       50%      { transform: scale(1.03); text-shadow: 0 3px 10px rgba(0,0,0,0.28); }
     }
 
-    @keyframes orbPulse{
-      0%, 100% {
-        box-shadow:
-          0 0 26px rgba(255,255,255,0.88),
-          0 0 60px rgba(255,255,255,0.50);
-        opacity: 0.9;
+    /* ---------- Responsive tweaks ---------- */
+
+    /* Small phones */
+    @media (max-width: 420px){
+      :root{
+        --cell: 40px;                      /* denser grid so it looks the same scale */
+        --logo-size: clamp(42px, 12vw, 96px);
+        --tagline-size: clamp(12px, 3.8vw, 18px);
+        --topline-y: 24px;                 /* bring topline closer to the top */
+        --bottom-gap: 28px;                /* raise copyright slightly */
       }
-      50% {
-        box-shadow:
-          0 0 36px rgba(255,255,255,1),
-          0 0 90px rgba(255,255,255,0.65);
-        opacity: 1;
+      main { transform: translateY(-1vh); }
+      .topline { white-space: normal; text-overflow: clip; }
+    }
+
+    /* Portrait tablets / large phones */
+    @media (min-width: 421px) and (max-width: 768px){
+      :root{
+        --cell: 48px;
+        --logo-size: clamp(50px, 10vw, 120px);
+        --tagline-size: clamp(12px, 2.6vw, 20px);
+        --topline-y: 32px;
+        --bottom-gap: 36px;
       }
     }
 
+    /* Accessibility */
     @media (prefers-reduced-motion: reduce){
       body::before { animation: none; }
-      .x-italic, .orbit, .orb { animation: none; }
+      .x-italic { animation: none; }
     }
   </style>
 </head>
@@ -200,56 +180,10 @@
   </div>
 
   <main>
-    <div class="logo-wrap" id="logoWrap">
-      <h1 class="logo" id="logo"><span class="x-italic">x</span>tutor</h1>
-
-      <!-- Orbit ring (sized by JS) with the bright orb riding it -->
-      <div class="orbit" id="orbit">
-        <div class="orb" aria-hidden="true"></div>
-      </div>
-    </div>
-
+    <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
     <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
   </main>
 
   <div class="copyright">© xtutor.ai , 2025</div>
-
-  <script>
-    // Size the orbit so the orb never overlaps the word.
-    (function(){
-      const wrap = document.getElementById('logoWrap');
-      const logo = document.getElementById('logo');
-      const orbit = document.getElementById('orbit');
-
-      function sizeOrbit(){
-        if(!wrap || !logo || !orbit) return;
-
-        // Measure the logo word box
-        const rect = logo.getBoundingClientRect();
-
-        // Add a safe gap around the whole word + orb radius so it never touches
-        const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-gap')) || 18;
-        const orbSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--orb-size')) || 24;
-
-        // Diameter of orbit = logo size + 2*gap + orbSize (keeps outside the text)
-        const orbitW = rect.width  + 2*gap + orbSize;
-        const orbitH = rect.height + 2*gap + orbSize;
-
-        document.documentElement.style.setProperty('--orbit-w', orbitW + 'px');
-        document.documentElement.style.setProperty('--orbit-h', orbitH + 'px');
-      }
-
-      // Initial + on resize
-      sizeOrbit();
-      window.addEventListener('resize', sizeOrbit, { passive: true });
-
-      // If fonts load and change sizes, recalc
-      if ('fonts' in document) {
-        document.fonts.ready.then(sizeOrbit).catch(()=>{});
-      }
-    })();
-  </script>
 </body>
 </html>
-
-
