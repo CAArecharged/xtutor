@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>xtutor</title>
 
-  <!-- Lora font (regular + italic) -->
+  <!-- Lora (logo/tagline) -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
-  <!-- Montserrat (used as Canva Sans replacement for topline) -->
+  <!-- Montserrat (topline as Canva Sans alternative) -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet" />
 
   <style>
     :root{
-      --blue: #0868d3; /* brand blue */
+      --blue: #0868d3;
 
       /* Uniform, subtle grid */
       --grid: rgba(255,255,255,0.045);
@@ -20,7 +20,7 @@
 
       /* Type scale */
       --logo-size: clamp(58px, 8.1vw, 144px);
-      --tagline-size: clamp(12px, 1.4vw, 22px);  /* 30% smaller */
+      --tagline-size: clamp(12px, 1.4vw, 22px);  /* already 30% smaller */
     }
 
     html, body { height: 100%; }
@@ -32,7 +32,10 @@
       display: grid;
       place-items: center;
       text-align: center;
+      position: relative;
+      overflow: hidden;
 
+      /* Uniform faint grid */
       background-image:
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
@@ -41,19 +44,51 @@
 
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      position: relative;
-      overflow: hidden;
+
+      animation: gridDrift 40s linear infinite;
     }
 
-    /* faint header tagline */
+    /* Subtle stylish effects: animated sheen + gentle vignette */
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Diagonal moving sheen (very faint) */
+    body::before{
+      background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.00) 28%,
+        rgba(255,255,255,0.06) 55%,
+        rgba(255,255,255,0.00) 100%
+      );
+      background-size: 200% 200%;
+      mix-blend-mode: soft-light;
+      animation: sheenSlide 24s linear infinite;
+    }
+
+    /* Soft vignette to center focus */
+    body::after{
+      background: radial-gradient(
+        120% 120% at 50% 45%,
+        rgba(0,0,0,0.00) 55%,
+        rgba(0,0,0,0.10) 100%
+      );
+    }
+
+    /* Faint header tagline (topline) */
     .topline {
       position: absolute;
-      top: 50px; /* moved further down */
+      top: 50px; /* placed a bit lower as requested */
       left: 50%;
       transform: translateX(-50%);
       font-size: clamp(12px, 1vw, 16px);
       font-weight: 400;
-      opacity: 0.7; /* faint */
+      opacity: 0.7; /* updated to 0.7 */
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       font-family: "Montserrat", sans-serif;
@@ -61,23 +96,47 @@
 
     main { transform: translateY(-2vh); }
 
-  .logo{
-  margin: 0;
-  font-weight: 400;
-  font-size: var(--logo-size);
-  line-height: 1.05;
-  /* updated shadow: softer blur + a bit darker */
-  text-shadow: 0 3px 8px rgba(0,0,0,0.35);
-}
-    .x-italic{ font-style: italic; }
-
-    .tagline{
-      margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer */
-      font-size: var(--tagline-size);
+    .logo{
+      margin: 0;
       font-weight: 400;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.2); /* subtle */
+      font-size: var(--logo-size);
+      line-height: 1.05;
+      /* Subtle, parent-friendly shadow for readability */
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
+    /* Dynamic “x” */
+    .x-italic{
+      font-style: italic;
+      display: inline-block;
+      position: relative;
+      animation: xPulse 4.5s ease-in-out infinite;
+      will-change: transform, text-shadow;
+    }
+    /* Tiny orbiting dot around the x */
+    .x-italic::after{
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0.22em;
+      height: 0.22em;
+      margin: -0.11em 0 0 -0.11em;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255,255,255,0.55);
+      transform-origin: 0.6em -0.1em; /* radius of the orbit relative to the x */
+      animation: xOrbit 7s linear infinite;
+    }
+
+    .tagline{
+      margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer to logo */
+      font-size: var(--tagline-size);
+      font-weight: 400;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.20);
+    }
+
+    /* Bottom text */
     .copyright{
       position: absolute;
       bottom: 50px;
@@ -85,15 +144,42 @@
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
       font-weight: 400;
-      opacity: 0.7;
+      opacity: 0.7; /* updated to 0.7 */
       font-size: clamp(18px, 1.6vw, 24px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       user-select: none;
     }
+
+    /* Animations */
+    @keyframes sheenSlide{
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 200%; }
+    }
+    @keyframes gridDrift{
+      0%   { background-position: 0px 0px, 0px 0px; }
+      50%  { background-position: 12px 10px, 12px 10px; }
+      100% { background-position: 0px 0px, 0px 0px; }
+    }
+    @keyframes xPulse{
+      0%   { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
+      50%  { transform: translateY(-0.8%) scale(1.035); text-shadow: 0 0 10px rgba(255,255,255,0.18); }
+      100% { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
+    }
+    @keyframes xOrbit{
+      0%   { transform: rotate(0deg) translateX(0); }
+      100% { transform: rotate(360deg) translateX(0); }
+    }
+
+    /* Accessibility: reduce motion if user prefers */
+    @media (prefers-reduced-motion: reduce){
+      body { animation: none; }
+      body::before { animation: none; }
+      .x-italic, .x-italic::after { animation: none; }
+    }
   </style>
 </head>
 <body>
-  <!-- Faint topline -->
+  <!-- Topline (Canva Sans-style via Montserrat), now at 0.7 opacity -->
   <div class="topline">
     The UK Maths Tutor, Supporting learners from KS1 to KS3.
   </div>
@@ -103,6 +189,8 @@
     <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
   </main>
 
+  <!-- Bottom text now at 0.7 opacity -->
   <div class="copyright">© xtutor.ai , 2025</div>
 </body>
 </html>
+
