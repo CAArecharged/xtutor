@@ -19,10 +19,14 @@
       --logo-size: clamp(58px, 8.1vw, 144px);
       --tagline-size: clamp(12px, 1.4vw, 22px);
 
-      /* Orbit settings */
-      --orbit-dur: 12s;
-      --orbit-radius: 2.5em;
-      --orb-size: clamp(18px, 2.4vw, 34px);
+      /* Orbit visuals */
+      --orb-size: clamp(18px, 2.4vw, 34px);      /* bright, big */
+      --orbit-dur: 14s;                           /* slow, calm rotation */
+      --safe-gap: clamp(14px, 1.2vw, 24px);       /* space between text and orb */
+
+      /* These are set by JS based on the logo size */
+      --orbit-w: 0px;
+      --orbit-h: 0px;
     }
 
     html, body { height: 100%; }
@@ -37,20 +41,36 @@
       position: relative;
       overflow: hidden;
 
-      /* Faint grid only */
+      /* Faint grid */
       background-image:
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
       background-size: var(--cell) var(--cell), var(--cell) var(--cell);
+      background-position: 0 0, 0 0;
     }
 
-    /* Gentle vignette only (no sheen, background stays solid) */
+    /* Gentle vignette (keeps base blue constant) */
     body::after{
       content:"";
       position: absolute; inset: 0; pointer-events: none;
       background: radial-gradient(120% 120% at 50% 45%,
         rgba(0,0,0,0) 55%,
         rgba(0,0,0,0.08) 100%);
+      z-index: 0;
+    }
+
+    /* Background breathing (slow darkening/brightening overlay) */
+    body::before{
+      content:"";
+      position: absolute; inset: 0; pointer-events: none;
+      background: rgba(0,0,0,0.10);
+      opacity: 0;                  /* starts clear */
+      animation: bgPulse 16s ease-in-out infinite;
+      z-index: 0;
+    }
+    @keyframes bgPulse{
+      0%,100% { opacity: 0; }
+      50%     { opacity: 0.08; }  /* very gentle fade darker */
     }
 
     .topline {
@@ -64,11 +84,12 @@
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       font-family: "Montserrat", sans-serif;
-      z-index: 2;
+      z-index: 3;
     }
 
-    main { transform: translateY(-2vh); z-index: 2; }
+    main { transform: translateY(-2vh); z-index: 3; }
 
+    /* Wrap so we can size the orbit around the whole word */
     .logo-wrap{
       position: relative;
       display: inline-block;
@@ -82,31 +103,42 @@
       line-height: 1.05;
       text-shadow: 0 2px 6px rgba(0,0,0,0.25);
       position: relative;
-      z-index: 2;
+      z-index: 4; /* text above background overlays */
     }
 
     .x-italic{
       font-style: italic;
       display: inline-block;
       animation: xPulse var(--orbit-dur) ease-in-out infinite;
+      will-change: transform, text-shadow;
     }
 
-    /* Orbiting orb ABOVE the text */
-    .orb{
+    /* The orbit ring sized by JS so the orb never overlaps the text */
+    .orbit{
       position: absolute;
       top: 50%; left: 50%;
-      width: var(--orb-size); height: var(--orb-size);
-      margin: calc(var(--orb-size)/-2) 0 0 calc(var(--orb-size)/-2);
+      width: var(--orbit-w);
+      height: var(--orbit-h);
+      transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: rgba(255,255,255,0.92);
-      box-shadow:
-        0 0 24px rgba(255,255,255,0.85),
-        0 0 54px rgba(255,255,255,0.55);
       pointer-events: none;
-      z-index: 5; /* now above the text */
-      mix-blend-mode: screen;
+      z-index: 5;                         /* above the text */
+      animation: orbitSpin var(--orbit-dur) linear infinite;
+    }
 
-      animation: orbit var(--orbit-dur) linear infinite, orbPulse var(--orbit-dur) ease-in-out infinite;
+    /* The bright orb that rides the ring’s perimeter */
+    .orb{
+      position: absolute;
+      top: 50%; left: 100%;
+      width: var(--orb-size); height: var(--orb-size);
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.94);
+      box-shadow:
+        0 0 28px rgba(255,255,255,0.9),
+        0 0 72px rgba(255,255,255,0.55);
+      mix-blend-mode: screen;
+      animation: orbPulse var(--orbit-dur) ease-in-out infinite;
     }
 
     .tagline{
@@ -127,41 +159,38 @@
       font-size: clamp(18px, 1.6vw, 24px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       user-select: none;
-      z-index: 2;
+      z-index: 3;
     }
 
     /* Animations */
-    @keyframes orbit{
-      0%   { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
-      100% { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+    @keyframes orbitSpin{
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     @keyframes xPulse{
-      0%, 100% {
-        transform: scale(1);
-        text-shadow: 0 2px 6px rgba(0,0,0,0.22);
-      }
-      50% {
-        transform: scale(1.03);
-        text-shadow: 0 3px 10px rgba(0,0,0,0.28);
-      }
+      0%, 100% { transform: scale(1);   text-shadow: 0 2px 6px rgba(0,0,0,0.22); }
+      50%      { transform: scale(1.03); text-shadow: 0 3px 10px rgba(0,0,0,0.28); }
     }
 
     @keyframes orbPulse{
       0%, 100% {
         box-shadow:
-          0 0 22px rgba(255,255,255,0.8),
-          0 0 50px rgba(255,255,255,0.45);
+          0 0 26px rgba(255,255,255,0.88),
+          0 0 60px rgba(255,255,255,0.50);
+        opacity: 0.9;
       }
       50% {
         box-shadow:
-          0 0 34px rgba(255,255,255,0.95),
-          0 0 72px rgba(255,255,255,0.6);
+          0 0 36px rgba(255,255,255,1),
+          0 0 90px rgba(255,255,255,0.65);
+        opacity: 1;
       }
     }
 
     @media (prefers-reduced-motion: reduce){
-      .x-italic, .orb { animation: none; }
+      body::before { animation: none; }
+      .x-italic, .orbit, .orb { animation: none; }
     }
   </style>
 </head>
@@ -171,16 +200,55 @@
   </div>
 
   <main>
-    <div class="logo-wrap">
-      <!-- Bright orbiting orb -->
-      <div class="orb" aria-hidden="true"></div>
+    <div class="logo-wrap" id="logoWrap">
+      <h1 class="logo" id="logo"><span class="x-italic">x</span>tutor</h1>
 
-      <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
+      <!-- Orbit ring (sized by JS) with the bright orb riding it -->
+      <div class="orbit" id="orbit">
+        <div class="orb" aria-hidden="true"></div>
+      </div>
     </div>
+
     <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
   </main>
 
   <div class="copyright">© xtutor.ai , 2025</div>
+
+  <script>
+    // Size the orbit so the orb never overlaps the word.
+    (function(){
+      const wrap = document.getElementById('logoWrap');
+      const logo = document.getElementById('logo');
+      const orbit = document.getElementById('orbit');
+
+      function sizeOrbit(){
+        if(!wrap || !logo || !orbit) return;
+
+        // Measure the logo word box
+        const rect = logo.getBoundingClientRect();
+
+        // Add a safe gap around the whole word + orb radius so it never touches
+        const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-gap')) || 18;
+        const orbSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--orb-size')) || 24;
+
+        // Diameter of orbit = logo size + 2*gap + orbSize (keeps outside the text)
+        const orbitW = rect.width  + 2*gap + orbSize;
+        const orbitH = rect.height + 2*gap + orbSize;
+
+        document.documentElement.style.setProperty('--orbit-w', orbitW + 'px');
+        document.documentElement.style.setProperty('--orbit-h', orbitH + 'px');
+      }
+
+      // Initial + on resize
+      sizeOrbit();
+      window.addEventListener('resize', sizeOrbit, { passive: true });
+
+      // If fonts load and change sizes, recalc
+      if ('fonts' in document) {
+        document.fonts.ready.then(sizeOrbit).catch(()=>{});
+      }
+    })();
+  </script>
 </body>
 </html>
 
