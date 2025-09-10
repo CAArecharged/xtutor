@@ -66,18 +66,15 @@
       font-weight: 400;
       font-size: var(--logo-size);
       line-height: 1.05;
-      /* soft, parent-friendly visibility */
-      text-shadow: 
-        0 3px 8px rgba(0,0,0,0.25),   /* gentle dark blur */
-        0 0 6px rgba(255,255,255,0.2); /* subtle white glow */
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25); /* subtle, balanced shadow */
     }
     .x-italic{ font-style: italic; }
 
     .tagline{
-      margin: clamp(4px, 0.6vw, 7px) 0 0; /* closer to logo */
+      margin: clamp(4px, 0.6vw, 7px) 0 0; /* 30% closer */
       font-size: var(--tagline-size);
       font-weight: 400;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.25); /* softer than logo */
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2); /* subtle */
     }
 
     .copyright{
