@@ -14,10 +14,10 @@
 
       /* Uniform, subtle grid */
       --grid: rgba(255,255,255,0.045);
-      --cell: 60px; /* matches your reference scale */
+      --cell: 60px;
 
       /* Type scale */
-      --logo-size: clamp(58px, 8.1vw, 144px);   /* 10% smaller than before */
+      --logo-size: clamp(58px, 8.1vw, 144px);   /* 10% smaller */
       --tagline-size: clamp(18px, 2vw, 32px);
     }
 
@@ -31,16 +31,30 @@
       place-items: center;
       text-align: center;
 
-      /* Uniform faint grid (no bold major lines) */
+      /* Uniform faint grid */
       background-image:
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
       background-size: var(--cell) var(--cell), var(--cell) var(--cell);
       background-position: 0 0, 0 0;
+
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       position: relative;
       overflow: hidden;
+    }
+
+    /* faint header tagline */
+    .topline {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(14px, 1.2vw, 18px);
+      font-weight: 400;
+      opacity: 0.6;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
 
     main { transform: translateY(-2vh); } /* small visual nudge like the ref */
@@ -48,7 +62,6 @@
     .logo{
       margin: 0;
       font-weight: 400;
-      font-size: --logo-size; /* fallback if var() not supported */
       font-size: var(--logo-size);
       line-height: 1.05;
       text-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -56,7 +69,7 @@
     .x-italic{ font-style: italic; }
 
     .tagline{
-      margin: clamp(6px, 0.8vw, 10px) 0 0; /* ~50% closer than before */
+      margin: clamp(6px, 0.8vw, 10px) 0 0; /* 50% closer */
       font-size: var(--tagline-size);
       font-weight: 400;
       text-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -69,8 +82,8 @@
       left: 50%;
       transform: translateX(-50%);
       font-family: "Segoe UI Symbol", "Noto Sans Symbols", system-ui, "Lora", serif;
-      font-weight: 400;         /* not bold */
-      opacity: 0.55;            /* faint */
+      font-weight: 400;
+      opacity: 0.55;
       font-size: clamp(18px, 1.6vw, 24px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.2);
       user-select: none;
@@ -78,6 +91,11 @@
   </style>
 </head>
 <body>
+  <!-- New faint topline -->
+  <div class="topline">
+    The UK Maths Tutor, Supporting learners from KS1 to KS3.
+  </div>
+
   <main>
     <h1 class="logo"><span class="x-italic">x</span>tutor</h1>
     <p class="tagline">Learning begins with <span class="x-italic">x</span>.</p>
