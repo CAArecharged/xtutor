@@ -1,53 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>xtutor</title>
+
+  <!-- Lora font (regular + italic) -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+
   <style>
+    :root{
+      /* Color + scale tuned to the reference */
+      --blue: #1673e6;
+      --text: #ffffff;
+      --grid: rgba(255,255,255,0.06);
+      --grid-strong: rgba(255,255,255,0.08);
+
+      /* Typography scales (responsive but locks near the reference on desktop) */
+      --logo-size: clamp(64px, 9.5vw, 180px);
+      --tagline-size: clamp(18px, 2.1vw, 36px);
+      --footer-size: clamp(12px, 1vw, 18px);
+      --tight: 0.01em;
+    }
+
+    /* Page */
+    html, body {
+      height: 100%;
+    }
     body {
       margin: 0;
-      padding: 0;
-      background: #0d6efd; /* Bright blue background */
-      font-family: 'Georgia', serif;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      position: relative;
-      background-image: linear-gradient(
-        to right, rgba(255,255,255,0.05) 1px, transparent 1px
-      ), linear-gradient(
-        to bottom, rgba(255,255,255,0.05) 1px, transparent 1px
-      );
-      background-size: 50px 50px; /* Creates the grid effect */
+      color: var(--text);
+      background: var(--blue);
+      font-family: "Lora", serif;
+
+      /* Subtle grid (small cells + stronger major lines) */
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-strong) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-strong) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px, 400px 400px, 400px 400px;
+      background-position: 0 0, 0 0, 0 0, 0 0;
+
+      display: grid;
+      grid-template-rows: 1fr auto;
+      place-items: center;
+    }
+
+    .center {
+      text-align: center;
+      transform: translateY(-4vh); /* nudges up to match reference composition */
     }
 
     .logo {
-      font-size: 80px;
-      font-weight: normal;
+      font-size: var(--logo-size);
+      font-weight: 400;
+      letter-spacing: var(--tight);
+      line-height: 1.05;
+      margin: 0;
     }
-
-    .tagline {
-      font-size: 20px;
-      margin-top: 10px;
+    /* Make only the initial x italic, everywhere we mark it up */
+    .x-italic {
       font-style: italic;
     }
 
-    .footer {
-      position: absolute;
-      bottom: 30px;
-      font-size: 16px;
-      font-weight: bold;
+    .tagline {
+      font-size: var(--tagline-size);
+      margin-top: clamp(8px, 1.2vw, 16px);
+      font-weight: 400;
+      letter-spacing: var(--tight);
+      opacity: 0.95;
     }
+
+    .footer {
+      width: 100%;
+      text-align: center;
+      padding: clamp(14px, 2vh, 24px) 0;
+      font-size: var(--footer-size);
+      font-weight: 700;
+      opacity: 0.95;
+    }
+
+    /* Crisp rendering on Windows too */
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   </style>
 </head>
 <body>
-  <div class="logo">xtutor</div>
-  <div class="tagline">Still looking for x?</div>
-  <div class="footer">© xtutor.ai , 2025</div>
+  <main class="center" aria-label="Landing content">
+    <h1 class="logo">
+      <span class="x-italic">x</span>tutor
+    </h1>
+
+    <p class="tagline">
+      Still looking for <span class="x-italic">x</span>?
+    </p>
+  </main>
+
+  <footer class="footer">
+    © xtutor.ai , 2025
+  </footer>
 </body>
 </html>
 
